@@ -1,0 +1,32 @@
+{
+  "name": "text-browser",
+  "description": "A text mode only browser, like lynx but cooler",
+  "version": "0.0.0",
+  "main": "app.ts",
+  "scripts": {
+    "test": "echo \"I'm running a test!\"",
+    "format": "prettier --write ./src/**/*.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Good-Meowning/text-browser.git"
+  },
+  "author": "Good Meowning",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Good-Meowning/text-browser/issues"
+  },
+  "homepage": "https://github.com/Good-Meowning/text-browser#readme",
+  "dependencies": {
+    "axios": "^0.22.0",
+    "blessed": "^0.1.81",
+    "cheerio": "^1.0.0-rc.10"
+  },
+  "devDependencies": {
+    "@types/blessed": "^0.1.19",
+    "mocha": "^9.1.2",
+    "prettier": "^2.4.1",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.4.3"
+  }
+}
