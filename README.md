@@ -9,7 +9,7 @@
   </a>
 </p>
 
-# Installation Guide
+# Installation and Testing Guide
 
 1. Download and install Docker for your operating system using this in-depth guide: [https://docs.docker.com/get-docker/](https://docs.docker.com/get-docker/)
 
@@ -22,13 +22,23 @@
 
 4. Clone this repository and enter the new directory by entering the following command into the terminal:
 
-   - `git clone https://github.com/Good-Meowning/text-browser.git text-browser && cd text-browser`
+   ```
+   git clone https://github.com/Good-Meowning/text-browser.git text-browser && cd text-browser
+   ```
 
 5. Run the code using Docker by entering the following command into the terminal:
 
-   - `docker build -t text-browser ./ && docker run --rm -it text-browser`
+   ```
+   docker build -t text-browser ./ && docker run --rm -it text-browser
+   ```
 
-6. Congradulations, you should now see our text browser in action! However, in the case that you run into any problems, please don't hesitate to create an issue [here](https://github.com/Good-Meowning/text-browser/issues)!
+6. [Optional] Run our tests by entering the following command into the terminal:
+
+   ```
+   docker build -t text-browser ./ && docker run --rm -it text-browser npm test
+   ```
+
+7. Congratulations, you have installed and tested our text browser! However, in the case that you run into any problems, please don't hesitate to create an issue [here](https://github.com/Good-Meowning/text-browser/issues)!
 
 # Repository Structure
 
