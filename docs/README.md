@@ -62,7 +62,7 @@ Terminal: the project will display a graphical user interface on the terminal, a
 
 We will use an event-driven architecture for this project, since the Blessed library allows us to register listeners for user input such as keyboard and mouse events. Additionally, we will define a class that makes HTTP requests at the request of the Blessed client. This class will also be responsible for parsing, processing, and formatting the provided HTML document that will be returned to our Blessed client for rendering.
 
-![Architecture Diagram](architecture-diagram-transparent.png)
+![Architecture Diagram](architecture-diagram.png)
 
 # Preliminary Roadmap
 
