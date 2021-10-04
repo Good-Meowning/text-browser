@@ -2,7 +2,7 @@ import blessed from "blessed";
 
 // Create a screen object.
 const screen = blessed.screen({
-  smartCSR: true
+  smartCSR: true,
 });
 
 screen.title = "Good Meowning!";
@@ -16,15 +16,15 @@ const box = blessed.box({
   content: "{bold}I am running!{/bold}",
   tags: true,
   border: {
-    type: "line"
+    type: "line",
   },
   style: {
     fg: "white",
     bg: "magenta",
     border: {
-      fg: "#f0f0f0"
-    }
-  }
+      fg: "#f0f0f0",
+    },
+  },
 });
 
 // Append our box to the screen.
