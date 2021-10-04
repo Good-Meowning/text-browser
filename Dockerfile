@@ -1,7 +1,13 @@
 FROM node:16
+
+# create app directory
 WORKDIR /app
-COPY package.json /app
+
+# copy source code
+COPY . ./
+
+# install packages
 RUN npm install
 
-COPY . /app
+# start app
 CMD ["npm", "start"]
