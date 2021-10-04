@@ -13,12 +13,17 @@
 
 1. Download and install Docker for your operating system using this in-depth guide: [https://docs.docker.com/get-docker/](https://docs.docker.com/get-docker/)
 
-2. Open a terminal
-
-3. Verify whether Docker is installed correctly by entering the following command into the terminal:
-
+   - Verify whether Docker is installed correctly by entering the following command into a terminal:
    - `docker run --rm hello-world`
    - If Docker outputs a message that contains "Hello from Docker!" then your installation has been successful
+
+2. Download and install Git for your operating system here: [https://git-scm.com/downloads/](https://git-scm.com/downloads/)
+
+   - Verify whether Git is installed correctly by entering the following command into a terminal:
+   - `git --version`
+   - If Git outputs its version, then your installation has been successful
+
+3. Open a terminal
 
 4. Clone this repository and enter the new directory by entering the following command into the terminal:
 
