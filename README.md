@@ -30,7 +30,7 @@
 5. Run the code using Docker by entering the following command into the terminal:
 
    ```
-   docker build -t text-browser . && docker run --rm -it text-browser
+   docker build -t text-browser . && docker run --rm -it text-browser npm start
    ```
 
 6. \[Optional\] Run our tests by entering the following command into the terminal:
