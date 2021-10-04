@@ -7,7 +7,7 @@
     "start": "NODE_PATH=./src/ ts-node-dev ./src/app.ts",
     "build": "npm run format && tsc",
     "test": "mocha ./test/test.ts",
-    "clean": "rm -r ./dest/",
+    "clean": "rm -r ./dist/",
     "format": "prettier --write ./src/**/*.ts"
   },
   "repository": {
