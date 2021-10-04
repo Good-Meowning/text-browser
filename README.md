@@ -33,7 +33,7 @@
    docker build -t text-browser . && docker run --rm -it text-browser
    ```
 
-6. [Optional] Run our tests by entering the following command into the terminal:
+6. \[Optional\] Run our tests by entering the following command into the terminal:
 
    ```
    docker build -t text-browser . && docker run --rm -it text-browser npm test
