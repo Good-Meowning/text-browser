@@ -1,0 +1,9 @@
+# ignore everything
+**
+
+# do not ignore code and build config
+!/src/**
+!/test/**
+!/package-lock.json
+!/package.json
+!/tsconfig.json
