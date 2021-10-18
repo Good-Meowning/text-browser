@@ -5,6 +5,7 @@
   "main": "app.ts",
   "scripts": {
     "start": "NODE_PATH=./src/ ts-node-dev ./src/app.ts",
+    "backend": "NODE_PATH=./src/ ts-node-dev ./src/backend-class/run.ts",
     "build": "npm run format && tsc",
     "test": "mocha ./test/test.ts",
     "clean": "rm -r ./dist/",
@@ -30,6 +31,8 @@
   },
   "devDependencies": {
     "@types/blessed": "^0.1.19",
+    "fs": "^0.0.1-security",
+    "i": "^0.3.7",
     "mocha": "^9.1.2",
     "prettier": "^2.4.1",
     "ts-node-dev": "^1.1.8",
