@@ -5,7 +5,6 @@
   "main": "app.ts",
   "scripts": {
     "start": "NODE_PATH=./src/ ts-node-dev ./src/app.ts",
-    "backend": "NODE_PATH=./src/ ts-node-dev ./src/backend-class/run.ts",
     "build": "npm run format && tsc",
     "test": "mocha ./test/test.ts",
     "clean": "rm -r ./dist/",
