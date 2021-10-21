@@ -1,11 +1,11 @@
 import * as cheerio from "cheerio";
+import { isComment, isTag, isText } from "domhandler";
 import { getData } from "backend-class";
-import { isTag, isText } from "domhandler";
 
 /**
  * Get and parse the HTML data at URL
- * @param url 
- * @param isLocal 
+ * @param url
+ * @param isLocal
  * @returns string of parsed data
  */
 export async function getParsedData(url: string, isLocal: boolean) {
@@ -18,19 +18,14 @@ export async function getParsedData(url: string, isLocal: boolean) {
   return result;
 }
 
-function a(result: string[], currentNode: cheerio.Node) {
-  result.push(parseTree(currentNode));
-  return result;
-}
-
 /**
  * Parse the tree starting at the given node
  * @param node starting node
  * @returns string containing parsed tree text
  */
 function parseTree(node: cheerio.Node | null): string {
-  // Node is null
-  if (!node) return "";
+  // Node is null or HTML comment
+  if (!node || isComment(node)) return "";
 
   // Node is only text
   if (isText(node)) return node.data;

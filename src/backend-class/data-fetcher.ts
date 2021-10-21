@@ -32,7 +32,7 @@ export async function getData(url: string, isLocal: boolean) {
  * @param url
  * @returns string of HTML
  */
-export async function getWebContentData(url: string) {
+async function getWebContentData(url: string) {
   const res = await axios.get(url);
   return res.data;
 }
@@ -42,7 +42,7 @@ export async function getWebContentData(url: string) {
  * @param path
  * @returns string of HTML
  */
-export async function getLocalContentData(path: string) {
+async function getLocalContentData(path: string) {
   const data = await fs.readFile(path, "utf-8");
   return data;
 }
