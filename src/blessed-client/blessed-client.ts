@@ -1,19 +1,44 @@
 import blessed from "blessed";
+import { getParsedData } from "backend-class";
 
 export class BlessedClient {
+  private screen: blessed.Widgets.Screen;
+  private box: blessed.Widgets.BoxElement;
+
+  /**
+   * Creates a screen object and a box element
+   */
   constructor() {
-    this.renderScreen();
+    this.screen = this.initiateScreen();
+    this.box = this.initiateBox();
+
+    // Append our box to the screen
+    this.screen.append(this.box);
   }
 
-  renderScreen() {
-    // Create a screen object.
+  /**
+   * Initiates the screen
+   */
+  private initiateScreen() {
+    // Create a screen object
     const screen = blessed.screen({
       smartCSR: true,
     });
 
+    // Set screen title
     screen.title = "Good Meowning!";
 
-    // Create a box perfectly centered horizontally and vertically.
+    // Quit on Escape, q, or Control-C
+    screen.key(["escape", "q", "C-c"], (ch, key) => process.exit(0));
+
+    return screen;
+  }
+
+  /**
+   * Initiates a box (?)
+   */
+  private initiateBox() {
+    // Create a box perfectly centered horizontally and vertically
     const box = blessed.box({
       top: "center",
       left: "center",
@@ -33,18 +58,27 @@ export class BlessedClient {
       },
     });
 
-    // Append our box to the screen.
-    screen.append(box);
+    return box;
+  }
 
-    // Quit on Escape, q, or Control-C.
-    screen.key(["escape", "q", "C-c"], function (ch, key) {
-      return process.exit(0);
-    });
+  /**
+   * Visit HTML page and render page
+   * @param url
+   * @param isLocal
+   */
+  async visitURL(url: string, isLocal: boolean) {
+    // TODO: use parsed data
+    try {
+      const data = await getParsedData(url, isLocal)
+      console.log(data);
+    } catch (err) {
+      console.error(err)
+    }
 
-    // Focus our element.
-    box.focus();
+    // Focus our element (?)
+    this.box.focus();
 
-    // Render the screen.
-    screen.render();
+    // Render the screen
+    this.screen.render();
   }
 }
