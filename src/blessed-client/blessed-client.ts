@@ -42,8 +42,8 @@ export class BlessedClient {
     const box = blessed.box({
       top: "center",
       left: "center",
-      width: "50%",
-      height: "50%",
+      width: "100%",
+      height: "100%",
       content: "{bold}I am running!{/bold}",
       tags: true,
       border: {
@@ -56,10 +56,28 @@ export class BlessedClient {
           fg: "#f0f0f0",
         },
       },
+      // enable scrolling with mouse
+      scrollable: true,
+      alwaysScroll: true,
+      mouse: true
     });
 
     return box;
   }
+
+  /**
+   * Update the box content and render it on the UI
+   * @param content
+   */
+   private updateContent(content: string){
+    this.box.setContent(content);
+    // Focus our element (?)
+    this.box.focus();
+
+    // Render the screen
+    this.screen.render();
+  }
+
 
   /**
    * Visit HTML page and render page
@@ -68,17 +86,18 @@ export class BlessedClient {
    */
   async visitURL(url: string, isLocal: boolean) {
     // TODO: use parsed data
+    let data = ''
     try {
-      const data = await getParsedData(url, isLocal)
-      console.log(data);
+      data = await getParsedData(url, isLocal)
+      console.error(data);
+    // TODO: catch different error code and update the error msg
     } catch (err) {
       console.error(err)
+      // print a general err msg for now
+      data = 'An unexpected error occured'
     }
 
-    // Focus our element (?)
-    this.box.focus();
-
-    // Render the screen
-    this.screen.render();
+    // update the content
+    this.updateContent(data);
   }
 }
