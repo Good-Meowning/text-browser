@@ -32,6 +32,9 @@ function parseTree(node: cheerio.Node | null): string {
 
   // Node is HTML tag
   if (isTag(node)) {
+    // Ignore CSS and JavaScript
+    if (node.type === "style" || node.type === "script") return "";
+
     // Traverse tree for text with DFS
     return node.childNodes.reduce(
       (result, currentNode) => result + parseTree(currentNode),
