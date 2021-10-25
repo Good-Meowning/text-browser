@@ -27,38 +27,44 @@
 
 4. Clone this repository and enter the new directory by entering the following command into the terminal:
 
-   ```
+   ```bash
    git clone https://github.com/Good-Meowning/text-browser.git text-browser
    cd text-browser
    ```
 
 5. Run the code using Docker by entering the following command into the terminal:
 
-   ```
-   docker build -t text-browser . && docker run --rm -it text-browser npm start
+   ```bash
+   # ./run.sh <URL>
+   # For example:
+   ./run.sh parrot.live
+   ./run.sh file://webserver/public-html/paragraph.html
    ```
 
 6. \[Optional\] Run our tests by entering the following command into the terminal:
 
-   ```
-   docker build -t text-browser . && docker run --rm -it text-browser npm test
+   ```bash
+   ./test.sh
    ```
 
 7. Congratulations, you have installed and tested our text browser! However, in the case that you run into any problems, please don't hesitate to create an issue [here](https://github.com/Good-Meowning/text-browser/issues)!
 
 # Repository Structure
 
-<!-- credits: https://github.com/xiaoluoboding/repository-tree -->
+Credits: [github.com/xiaoluoboding/repository-tree](https://github.com/xiaoluoboding/repository-tree)
 
 ```
 /
 ├─ docs/
-│  └─ PDF documentation files
+│  └─ Assignment documentation files
 ├─ src/
 │  └─ TypeScript source code files
 ├─ test/
-│  ├─ TypeScript unit test files
-│  └─ HTML sample files
+│  └─ TypeScript unit test files
+├─ webserver/
+│  ├─ public-html/
+│  │  └─ HTML sample files
+│  └─ Scripts and configuration files
 ├─ ...
-└─ Various configuration and information files
+└─ Various documentation, scripts, and configuration files
 ```
