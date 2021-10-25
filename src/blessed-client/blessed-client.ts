@@ -22,14 +22,14 @@ export class BlessedClient {
   private initiateScreen() {
     // Create a screen object
     const screen = blessed.screen({
-      smartCSR: true,
+      smartCSR: true
     });
 
     // Set screen title
     screen.title = "Good Meowning!";
 
     // Quit on Escape, q, or Control-C
-    screen.key(["escape", "q", "C-c"], (ch, key) => process.exit(0));
+    screen.key(["escape", "q", "C-c"], (_ch, _key) => process.exit(0));
 
     return screen;
   }
@@ -44,17 +44,16 @@ export class BlessedClient {
       left: "center",
       width: "100%",
       height: "100%",
-      content: "{bold}I am running!{/bold}",
       tags: true,
       border: {
-        type: "line",
+        type: "line"
       },
       style: {
         fg: "white",
         bg: "magenta",
         border: {
-          fg: "#f0f0f0",
-        },
+          fg: "#f0f0f0"
+        }
       },
       // enable scrolling with mouse
       scrollable: true,
@@ -69,7 +68,7 @@ export class BlessedClient {
    * Update the box content and render it on the UI
    * @param content
    */
-   private updateContent(content: string){
+  private updateContent(content: string) {
     this.box.setContent(content);
     // Focus our element (?)
     this.box.focus();
@@ -78,23 +77,21 @@ export class BlessedClient {
     this.screen.render();
   }
 
-
   /**
    * Visit HTML page and render page
    * @param url
-   * @param isLocal
    */
-  async visitURL(url: string, isLocal: boolean) {
-    // TODO: use parsed data
-    let data = ''
+  async visitURL(url: string) {
+    // Use parsed data
+    let data = "";
     try {
-      data = await getParsedData(url, isLocal)
+      data = await getParsedData(url);
       console.error(data);
-    // TODO: catch different error code and update the error msg
     } catch (err) {
-      console.error(err)
+      // TODO: catch different error code and update the error msg
+      console.error(err);
       // print a general err msg for now
-      data = 'An unexpected error occured'
+      data = "An unexpected error occured";
     }
 
     // update the content
