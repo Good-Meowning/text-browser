@@ -13,33 +13,23 @@ describe("Data parser test", () => {
   describe("Test local files", () => {
     // Positive cases
     fsCases.forEach(async (output, url) =>
-      it(url, () =>
-        chai.assert.eventually.equal(getParsedData(url, true), output)
-      )
+      it(url, () => chai.assert.eventually.equal(getParsedData(url), output))
     );
 
     // Negative cases
     it("path does not exist", async () =>
-      chai.assert.isRejected(
-        getParsedData("path/does/not/exist", true),
-        Error
-      ));
+      chai.assert.isRejected(getParsedData("path/does/not/exist"), Error));
   });
 
   // Remote files via Axios
   describe("Test remote files", () => {
     // Positive cases
     axiosCases.forEach(async (output, url) =>
-      it(url, () =>
-        chai.assert.eventually.equal(getParsedData(url, false), output)
-      )
+      it(url, () => chai.assert.eventually.equal(getParsedData(url), output))
     );
 
     // Negative cases
     it("path does not exist", async () =>
-      chai.assert.isRejected(
-        getParsedData("path/does/not/exist", false),
-        Error
-      ));
+      chai.assert.isRejected(getParsedData("path/does/not/exist"), Error));
   });
 });

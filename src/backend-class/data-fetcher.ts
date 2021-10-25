@@ -3,28 +3,24 @@ import * as fs from "fs/promises";
 
 /**
  * Parses an URL to fetch local file or web file
- * TODO: check discussion at
- * https://discord.com/channels/889001266703917158/899742168149807185
+ * @param url
+ * @returns string of HTML
  */
-export async function getData(url: string, isLocal: boolean) {
-  // TODO: discuss URL handling
+export async function getData(url: string) {
+  const fileRegex = "^file://.+$";
+  const httpRegex = "^http[s]?://.+$";
 
-  // const fileRegex = "^file://(.+)$";
-  // const httpRegex = "^http[s]?://.+$";
-
-  // if (url.match(fileRegex)) {
-  //   url = url.slice(7);
-  //   return await getLocalContentData(url);
-  // } else if (url.match(httpRegex)) {
-  //   return await getWebContentData(url);
-  // } else {
-  //   throw new Error(`Invalid URL: ${url}`);
-  // }
-
-  const data = isLocal
-    ? await getLocalContentData(url)
-    : await getWebContentData(url);
-  return data;
+  if (url.match(fileRegex)) {
+    // File path
+    url = url.slice(7);
+    return await getLocalContentData(url);
+  } else if (url.match(httpRegex)) {
+    // URL with specified HTTP/HTTPS
+    return await getWebContentData(url);
+  } else {
+    // URL with unspecified HTTP/HTTPS
+    return await getWebContentData(`http://${url}`);
+  }
 }
 
 /**
