@@ -12,8 +12,7 @@ cd webserver
 while ! curl -sf http://localhost:8080 > /dev/null; do sleep 0.1; done
 cd -
 
-# Set up network, build and run project
-docker network create text-browser-network
+# Build and run project
 docker build -t text-browser .
 docker run --rm -it --network text-browser-network text-browser npm test
 

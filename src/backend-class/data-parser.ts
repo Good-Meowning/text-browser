@@ -5,11 +5,10 @@ import { getData } from "backend-class";
 /**
  * Get and parse the HTML data at URL
  * @param url
- * @param isLocal
  * @returns string of parsed data
  */
-export async function getParsedData(url: string, isLocal: boolean) {
-  const data = await getData(url, isLocal);
+export async function getParsedData(url: string) {
+  const data = await getData(url);
   const tree = cheerio.load(data);
 
   // Set initial node to the one "body" node
