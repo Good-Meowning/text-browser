@@ -1,42 +1,16 @@
-import blessed from "blessed";
+import { BlessedClient } from "blessed-client";
 
-// Create a screen object.
-const screen = blessed.screen({
-  smartCSR: true,
-});
+function main() {
+  // Args [0]=node, [1]=apps.ts, [2]=URL
+  const args = process.argv;
 
-screen.title = "Good Meowning!";
+  // Exit app iff invalid parameters
+  if (!args[2]) return console.log("Usage: npm start <url>");
+  const url = args[2];
 
-// Create a box perfectly centered horizontally and vertically.
-const box = blessed.box({
-  top: "center",
-  left: "center",
-  width: "50%",
-  height: "50%",
-  content: "{bold}I am running!{/bold}",
-  tags: true,
-  border: {
-    type: "line",
-  },
-  style: {
-    fg: "white",
-    bg: "magenta",
-    border: {
-      fg: "#f0f0f0",
-    },
-  },
-});
+  // Create browser client
+  const blessedClient = new BlessedClient();
+  blessedClient.visitURL(url);
+}
 
-// Append our box to the screen.
-screen.append(box);
-
-// Quit on Escape, q, or Control-C.
-screen.key(["escape", "q", "C-c"], function (ch, key) {
-  return process.exit(0);
-});
-
-// Focus our element.
-box.focus();
-
-// Render the screen.
-screen.render();
+main();

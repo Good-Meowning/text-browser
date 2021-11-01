@@ -4,6 +4,7 @@
 # do not ignore code and build config
 !/src/**
 !/test/**
+!/webserver/**
 !/package-lock.json
 !/package.json
 !/tsconfig.json
