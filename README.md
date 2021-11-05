@@ -37,7 +37,8 @@
    ```bash
    # ./run.sh <URL>
    # For example:
-   ./run.sh parrot.live
+   ./run.sh google.ca
+   ./run.sh http://www.cs.toronto.edu/~arnold/index.html
    ./run.sh file://webserver/public-html/paragraph.html
    ```
 
