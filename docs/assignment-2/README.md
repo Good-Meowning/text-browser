@@ -1,8 +1,8 @@
-# Post Mortem
+# Post Mortem for Assignment 1
 
 Goals that we have achieved:
 
-- Setup typescript configuration for repo
+- Setup TypeScript configuration for repository
 
 - Setup Mocha test suite and hello world test
 
