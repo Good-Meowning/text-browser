@@ -3,17 +3,17 @@ import { getParsedData } from "backend-class";
 
 export class BlessedClient {
   private screen: blessed.Widgets.Screen;
-  private box: blessed.Widgets.BoxElement;
+  private layout: blessed.Widgets.LayoutElement;
 
   /**
-   * Creates a screen object and a box element
+   * Create core elements
    */
   constructor() {
     this.screen = this.initiateScreen();
-    this.box = this.initiateBox();
+    this.layout = this.initiateLayout();
 
-    // Append our box to the screen
-    this.screen.append(this.box);
+    // Append our layout to the screen
+    this.screen.append(this.layout);
   }
 
   /**
@@ -35,11 +35,14 @@ export class BlessedClient {
   }
 
   /**
-   * Initiates a box (?)
+   * Initiates a layout element
    */
-  private initiateBox() {
-    // Create a box perfectly centered horizontally and vertically
-    const box = blessed.box({
+  private initiateLayout() {
+    const parentScreen = this.screen;
+
+    return blessed.layout({
+      parent: parentScreen,
+      layout: "inline",
       top: "center",
       left: "center",
       width: "100%",
@@ -60,8 +63,6 @@ export class BlessedClient {
       alwaysScroll: true,
       mouse: true
     });
-
-    return box;
   }
 
   /**
@@ -69,9 +70,46 @@ export class BlessedClient {
    * @param content
    */
   private updateContent(content: string) {
-    this.box.setContent(content);
+    const layout = this.layout;
+    const childBoxArray: blessed.Widgets.BoxElement[] = [];
+
+    // create 10 boxes
+    for (let i = 0; i < 10; i++) {
+      let childBox = blessed.box({
+        parent: layout,
+        content: content.substring(5 * i), // random content substring
+        clickable: true,
+        width: 10, // hardcoded width
+        height: 20, // hardcoded height
+        border: "line",
+        mouse: true
+      });
+
+      // this onClick event works
+      childBox.on("click", () => console.log(`i am box number ${i}`));
+      childBoxArray.push(childBox);
+    }
+
+    this.layout.on("wheelup", (_arg) => {
+      childBoxArray.forEach((box) => {
+        box.top = parseInt(`${box.top}`) + 10;
+        box.bottom = parseInt(`${box.bottom}`) + 10;
+        // console.log("scroll up"); // this print works
+        // this.screen.render() // this dont change anything :(
+      });
+    });
+
+    this.layout.on("wheeldown", (_arg) => {
+      childBoxArray.forEach((box) => {
+        box.top = parseInt(`${box.top}`) - 10;
+        box.bottom = parseInt(`${box.bottom}`) - 10;
+        // console.log("scroll down"); // this print works
+        // this.screen.render() // this dont change anything :(
+      });
+    });
+
     // Focus our element (?)
-    this.box.focus();
+    this.layout.focus();
 
     // Render the screen
     this.screen.render();
@@ -86,7 +124,6 @@ export class BlessedClient {
     let data = "";
     try {
       data = await getParsedData(url);
-      console.error(data);
     } catch (err) {
       // TODO: catch different error code and update the error msg
       console.error(err);
