@@ -3,10 +3,16 @@ import { isComment, isTag, isText } from "domhandler";
 import { escape } from "blessed";
 import { getData } from "backend-class";
 
+export interface ParsedData {
+  data: string;
+  rawdata: string;
+  metadata: { [key: number]: string };
+}
+
 /**
  * Get and parse the HTML data at URL
  * @param url
- * @returns string of parsed data
+ * @returns ParsedData
  */
 export async function getParsedData(url: string) {
   const data = await getData(url);
@@ -21,37 +27,46 @@ export async function getParsedData(url: string) {
 /**
  * Parse the tree starting at the given node
  * @param node starting node
- * @returns string containing parsed tree text
+ * @returns ParsedData
  */
-function parseTree(node: cheerio.Node | null): string {
+function parseTree(node: cheerio.Node | null): ParsedData {
   // Node is null or HTML comment
-  if (!node || isComment(node)) return "";
+  if (!node || isComment(node)) return { data: "", rawdata: "", metadata: {} };
 
   // Node is only text
-  if (isText(node)) return escape(node.data);
+  if (isText(node))
+    return {
+      data: escape(node.data),
+      rawdata: escape(node.data),
+      metadata: {}
+    };
 
   // Node is HTML tag
   if (isTag(node)) {
     // Ignore CSS and JavaScript
-    if (node.type === "style" || node.type === "script") return "";
+    if (node.type === "style" || node.type === "script")
+      return { data: "", rawdata: "", metadata: {} };
 
     let prefix = "";
-    let postfix = "";
+    let suffix = "";
+    let href = "";
 
     switch (node.tagName.toLowerCase()) {
       case "i":
         prefix = "{inverse}";
-        postfix = "{/inverse}";
+        suffix = "{/inverse}";
         break;
 
+      case "a":
+        href = node.attribs["href"];
       case "u":
         prefix = "{underline}";
-        postfix = "{/underline}";
+        suffix = "{/underline}";
         break;
 
       case "blink":
         prefix = "{blink}";
-        postfix = "{/blink}";
+        suffix = "{/blink}";
         break;
 
       case "h1":
@@ -62,19 +77,29 @@ function parseTree(node: cheerio.Node | null): string {
       case "h6":
       case "b":
         prefix = "{bold}";
-        postfix = "{/bold}";
+        suffix = "{/bold}";
         break;
 
       default:
         break;
     }
 
+    // Create empty ParsedData
+    let parsedData: ParsedData = { data: "", rawdata: "", metadata: {} };
+
     // Traverse tree for text with DFS
-    return node.childNodes.reduce(
-      (result, currentNode) =>
-        prefix + result + parseTree(currentNode) + postfix,
-      ""
-    );
+    parsedData.data += prefix;
+    //parsedData.rawdata += ?.length
+    node.childNodes.forEach((childNode) => {
+      let nextParsedData = parseTree(childNode);
+      // for (const key in nextParsedData.metadata) {
+      //   // nextParsedData.metadata[key] += ?
+      // }
+      parsedData.data += nextParsedData.data;
+    });
+    parsedData.data += suffix;
+
+    return parsedData;
   }
 
   // Node is neither text nor HTML tag
