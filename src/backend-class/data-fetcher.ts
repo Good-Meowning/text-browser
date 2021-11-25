@@ -1,4 +1,5 @@
 import axios from "axios";
+import { ParsedURL } from "backend-class";
 import * as fs from "fs/promises";
 
 /**
@@ -6,20 +7,13 @@ import * as fs from "fs/promises";
  * @param url
  * @returns string of HTML
  */
-export async function getData(url: string) {
-  const fileRegex = "^file://.+$";
-  const httpRegex = "^http[s]?://.+$";
-
-  if (url.match(fileRegex)) {
+export async function getHTMLString(url: ParsedURL) {
+  if (url.filepath) {
     // File path
-    url = url.slice(7);
-    return await getLocalContentData(url);
-  } else if (url.match(httpRegex)) {
-    // URL with specified HTTP/HTTPS
-    return await getWebContentData(url);
+    return await getLocalContentData(url.filepath);
   } else {
-    // URL with unspecified HTTP/HTTPS
-    return await getWebContentData(`http://${url}`);
+    // URL with specified HTTP/HTTPS
+    return await getWebContentData(url.url);
   }
 }
 

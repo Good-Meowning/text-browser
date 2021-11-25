@@ -1,9 +1,10 @@
+import { DataServer } from "backend-class";
 import blessed from "blessed";
-import { getParsedData, ParsedData } from "backend-class";
 
 export class BlessedClient {
   private screen: blessed.Widgets.Screen;
   private box: blessed.Widgets.BoxElement;
+  private dataServer: DataServer;
 
   /**
    * Create core elements
@@ -11,6 +12,7 @@ export class BlessedClient {
   constructor() {
     this.screen = this.initiateScreen();
     this.box = this.initiateBox();
+    this.dataServer = new DataServer();
 
     // Append our box to the screen
     this.screen.append(this.box);
@@ -50,7 +52,7 @@ export class BlessedClient {
       },
       style: {
         fg: "white",
-        bg: "magenta",
+        bg: "black",
         border: {
           fg: "#f0f0f0"
         }
@@ -66,8 +68,8 @@ export class BlessedClient {
    * Update the box content and render it on the UI
    * @param content
    */
-  private updateContent(parsedData: ParsedData) {
-    this.box.setContent(parsedData.data);
+  private updateContent(parsedData: string) {
+    this.box.setContent(parsedData);
 
     // Focus our element
     this.box.focus();
@@ -82,18 +84,16 @@ export class BlessedClient {
    */
   async visitURL(url: string) {
     try {
-      // Use parsed data
-      const data = await getParsedData(url);
+      // Set URL and HTML data in data server
+      await this.dataServer.visitURL(url);
+      // Parse and render data
+      const data = this.dataServer.renderPage();
       this.updateContent(data);
     } catch (err) {
       // TODO: catch different error code and update the error msg
       console.error(err);
       // print a general err msg for now
-      const data = {
-        data: "An unexpected error occured",
-        rawdata: "",
-        metadata: {}
-      };
+      const data = "An unexpected error occured";
       this.updateContent(data);
     }
   }
