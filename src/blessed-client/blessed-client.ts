@@ -41,7 +41,7 @@ export class BlessedClient {
    */
   private initiateBox() {
     // Create a box perfectly centered horizontally and vertically
-    return blessed.box({
+    const box = blessed.box({
       top: "center",
       left: "center",
       width: "100%",
@@ -62,6 +62,19 @@ export class BlessedClient {
       alwaysScroll: true,
       mouse: true
     });
+
+    box.key(["enter"], (_ch, _key) => {
+      const hrefURL = this.dataServer.getHrefURL();
+      if (hrefURL) this.visitURL(hrefURL);
+    });
+    box.key(["tab"], (_ch, _key) =>
+      this.updateContent(this.dataServer.renderPage(1))
+    );
+    box.key(["S-tab"], (_ch, _key) =>
+      this.updateContent(this.dataServer.renderPage(-1))
+    );
+
+    return box;
   }
 
   /**
