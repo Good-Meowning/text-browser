@@ -1,0 +1,20 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node-terminal",
+      "name": "Debug",
+      "request": "launch",
+      "command": "npm run debug ${input:enterURL}",
+      "cwd": "${workspaceFolder}"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "enterURL",
+      "description": "Enter URL or file path (file://<path>)",
+      "type": "promptString",
+      "default": "google.ca"
+    }
+  ]
+}
