@@ -5,6 +5,7 @@
   "main": "app.ts",
   "scripts": {
     "start": "NODE_PATH=./src/ ts-node-dev ./src/app.ts",
+    "postinstall": "npx patch-package",
     "build": "npm run format && tsc",
     "test": "mocha -r ts-node/register -r tsconfig-paths/register ./test/**/*.ts",
     "clean": "rm -r ./dist/",
