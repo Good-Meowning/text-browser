@@ -1,9 +1,15 @@
 import { DataServer } from "backend-class";
 import blessed from "blessed";
+import { helpBox, mainBox, urlBox } from "./box-attributes";
+
+
+
 
 export class BlessedClient {
   private screen: blessed.Widgets.Screen;
   private box: blessed.Widgets.BoxElement;
+  private helpBox: blessed.Widgets.BoxElement;
+  private input: blessed.Widgets.TextboxElement;
   private dataServer: DataServer;
 
   /**
@@ -11,12 +17,16 @@ export class BlessedClient {
    */
   constructor() {
     this.screen = this.initiateScreen();
-    this.box = this.initiateBox();
+    this.box = this.initiateBox(mainBox);
+    this.helpBox = this.initiateBox(helpBox);
+    this.input = blessed.textbox(urlBox);
     this.dataServer = new DataServer();
 
     // Append our box to the screen
     this.screen.append(this.box);
   }
+
+
 
   /**
    * Initiates the screen
@@ -39,30 +49,12 @@ export class BlessedClient {
   /**
    * Initiates a big box element
    */
-  private initiateBox() {
+  private initiateBox(attributes: blessed.Widgets.BoxOptions) {
     // Create a box perfectly centered horizontally and vertically
-    const box = blessed.box({
-      top: "center",
-      left: "center",
-      width: "100%",
-      height: "100%",
-      tags: true,
-      border: {
-        type: "line"
-      },
-      style: {
-        fg: "white",
-        bg: "black",
-        border: {
-          fg: "#f0f0f0"
-        }
-      },
-      // enable scrolling with mouse
-      scrollable: true,
-      alwaysScroll: true,
-      mouse: true
-    });
+    const box = blessed.box(attributes);
 
+
+    // Setup keypress handlers
     box.key(["enter"], (_ch, _key) => {
       const hrefURL = this.dataServer.getHrefURL();
       if (hrefURL) this.visitURL(hrefURL);
@@ -73,7 +65,37 @@ export class BlessedClient {
     box.key(["S-tab"], (_ch, _key) =>
       this.updateContent(this.dataServer.renderPage(-1))
     );
+    box.key(["h"], (_ch, _key) => { 
+      this.screen.append(this.helpBox);
+      this.screen.render();
+    });
+    box.key(["S-h"], (_ch, _key) => { 
+      this.screen.remove(this.helpBox);
+      this.screen.render();
+    });
 
+    box.key(["i"], (_ch, _key) => { 
+      this.input.key(["escape"], (_ch, _key) => { 
+        this.input.cancel()
+      });
+      this.input.key(["enter"], (_ch, _key) => { 
+        this.input.submit()
+      });
+      this.input.on('submit', async () => {
+        await this.visitURL(this.input.value)
+        this.screen.remove(this.input)
+        this.screen.render();
+      })
+      this.screen.append(this.input)
+      this.input.focus()
+      this.screen.render();
+    });
+
+    box.key(["S-i"], (_ch, _key) => { 
+      this.screen.remove(this.input)
+      this.screen.render();
+    });
+  
     return box;
   }
 
