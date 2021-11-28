@@ -23,8 +23,6 @@ export class BlessedClient {
     this.screen.append(this.box);
   }
 
-
-
   /**
    * Initiates the screen
    */
@@ -50,7 +48,6 @@ export class BlessedClient {
     // Create a box perfectly centered horizontally and vertically
     const box = blessed.box(attributes);
 
-
     // Setup keypress handlers
     box.key(["enter"], (_ch, _key) => {
       const hrefURL = this.dataServer.getHrefURL();
@@ -62,37 +59,37 @@ export class BlessedClient {
     box.key(["S-tab"], (_ch, _key) =>
       this.updateContent(this.dataServer.renderPage(-1))
     );
-    box.key(["h"], (_ch, _key) => { 
+    box.key(["h"], (_ch, _key) => {
       this.screen.append(this.helpBox);
       this.screen.render();
     });
-    box.key(["S-h"], (_ch, _key) => { 
+    box.key(["S-h"], (_ch, _key) => {
       this.screen.remove(this.helpBox);
       this.screen.render();
     });
 
-    box.key(["i"], (_ch, _key) => { 
-      this.input.key(["escape"], (_ch, _key) => { 
-        this.input.cancel()
+    box.key(["i"], (_ch, _key) => {
+      this.input.key(["escape"], (_ch, _key) => {
+        this.input.cancel();
       });
-      this.input.key(["enter"], (_ch, _key) => { 
-        this.input.submit()
+      this.input.key(["enter"], (_ch, _key) => {
+        this.input.submit();
       });
-      this.input.on('submit', async () => {
-        await this.visitURL(this.input.value)
-        this.screen.remove(this.input)
+      this.input.on("submit", async () => {
+        await this.visitURL(this.input.value);
+        this.screen.remove(this.input);
         this.screen.render();
-      })
-      this.screen.append(this.input)
-      this.input.focus()
+      });
+      this.screen.append(this.input);
+      this.input.focus();
       this.screen.render();
     });
 
-    box.key(["S-i"], (_ch, _key) => { 
-      this.screen.remove(this.input)
+    box.key(["S-i"], (_ch, _key) => {
+      this.screen.remove(this.input);
       this.screen.render();
     });
-  
+
     return box;
   }
 
