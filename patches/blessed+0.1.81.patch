@@ -1,0 +1,18 @@
+diff --git a/node_modules/blessed/lib/widgets/scrollablebox.js b/node_modules/blessed/lib/widgets/scrollablebox.js
+index ce7310b..e015b7e 100644
+--- a/node_modules/blessed/lib/widgets/scrollablebox.js
++++ b/node_modules/blessed/lib/widgets/scrollablebox.js
+@@ -107,11 +107,11 @@ function ScrollableBox(options) {
+ 
+   if (options.mouse) {
+     this.on('wheeldown', function() {
+-      self.scroll(self.height / 2 | 0 || 1);
++      self.scroll(1);
+       self.screen.render();
+     });
+     this.on('wheelup', function() {
+-      self.scroll(-(self.height / 2 | 0) || -1);
++      self.scroll(-1);
+       self.screen.render();
+     });
+   }
