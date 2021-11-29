@@ -1,16 +1,18 @@
+import { DataServer } from "backend-class";
 import blessed from "blessed";
-import { getParsedData } from "backend-class";
 
 export class BlessedClient {
   private screen: blessed.Widgets.Screen;
   private box: blessed.Widgets.BoxElement;
+  private dataServer: DataServer;
 
   /**
-   * Creates a screen object and a box element
+   * Create core elements
    */
   constructor() {
     this.screen = this.initiateScreen();
     this.box = this.initiateBox();
+    this.dataServer = new DataServer();
 
     // Append our box to the screen
     this.screen.append(this.box);
@@ -35,7 +37,7 @@ export class BlessedClient {
   }
 
   /**
-   * Initiates a box (?)
+   * Initiates a big box element
    */
   private initiateBox() {
     // Create a box perfectly centered horizontally and vertically
@@ -50,7 +52,7 @@ export class BlessedClient {
       },
       style: {
         fg: "white",
-        bg: "magenta",
+        bg: "black",
         border: {
           fg: "#f0f0f0"
         }
@@ -61,6 +63,17 @@ export class BlessedClient {
       mouse: true
     });
 
+    box.key(["enter"], (_ch, _key) => {
+      const hrefURL = this.dataServer.getHrefURL();
+      if (hrefURL) this.visitURL(hrefURL);
+    });
+    box.key(["tab"], (_ch, _key) =>
+      this.updateContent(this.dataServer.renderPage(1))
+    );
+    box.key(["S-tab"], (_ch, _key) =>
+      this.updateContent(this.dataServer.renderPage(-1))
+    );
+
     return box;
   }
 
@@ -68,9 +81,10 @@ export class BlessedClient {
    * Update the box content and render it on the UI
    * @param content
    */
-  private updateContent(content: string) {
-    this.box.setContent(content);
-    // Focus our element (?)
+  private updateContent(parsedData: string) {
+    this.box.setContent(parsedData);
+
+    // Focus our element
     this.box.focus();
 
     // Render the screen
@@ -82,19 +96,18 @@ export class BlessedClient {
    * @param url
    */
   async visitURL(url: string) {
-    // Use parsed data
-    let data = "";
     try {
-      data = await getParsedData(url);
-      console.error(data);
+      // Set URL and HTML data in data server
+      await this.dataServer.visitURL(url);
+      // Parse and render data
+      const data = this.dataServer.renderPage();
+      this.updateContent(data);
     } catch (err) {
       // TODO: catch different error code and update the error msg
       console.error(err);
       // print a general err msg for now
-      data = "An unexpected error occured";
+      const data = "An unexpected error occured";
+      this.updateContent(data);
     }
-
-    // update the content
-    this.updateContent(data);
   }
 }
