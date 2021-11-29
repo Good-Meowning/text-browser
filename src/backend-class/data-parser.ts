@@ -63,7 +63,15 @@ export function parseTree(
   if (!node || isComment(node)) return { parsedData: "", urls: [] };
 
   // Node is only text
-  if (isText(node)) return { parsedData: escape(node.data), urls: [] };
+  // Trim each line and rejoin non-empty lines with spaces
+  if (isText(node)) {
+    const escapedData = escape(node.data);
+    const splitLines = escapedData.split(/[\r\n]+/);
+    const trimmedLines = splitLines.map((s) => s.trim());
+    const filteredLines = trimmedLines.filter((s) => s);
+    const joinedLines = filteredLines.join(" ");
+    return { parsedData: joinedLines, urls: [] };
+  }
 
   // Node is HTML tag
   if (isTag(node)) {
@@ -119,6 +127,9 @@ export function parseTree(
         suffix = "{/bold}";
         break;
 
+      case "br":
+        prefix = "\n";
+
       default:
         break;
     }
@@ -135,8 +146,9 @@ export function parseTree(
       parsedData += nextParsedData.parsedData;
       urls.push(...nextParsedData.urls);
     });
-
-    return { parsedData: prefix + parsedData + suffix, urls: urls };
+    parsedData = prefix + parsedData + suffix;
+    if (parsedData) parsedData += "\n";
+    return { parsedData: parsedData, urls: urls };
   }
 
   // Node is neither text nor HTML tag
