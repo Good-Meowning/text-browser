@@ -2,6 +2,7 @@ import { DataServer } from "backend-class";
 import blessed from "blessed";
 import { helpBox, mainBox, urlBox } from "./box-attributes";
 
+
 export class BlessedClient {
   private screen: blessed.Widgets.Screen;
   private box: blessed.Widgets.BoxElement;
@@ -14,6 +15,7 @@ export class BlessedClient {
    */
   constructor() {
     this.screen = this.initiateScreen();
+
     this.box = this.initiateBox(mainBox);
     this.helpBox = this.initiateBox(helpBox);
     this.input = blessed.textbox(urlBox);
