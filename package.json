@@ -8,7 +8,7 @@
     "postinstall": "npx patch-package",
     "debug": "NODE_PATH=./src/ ts-node-dev --transpile-only --respawn --inspect -- ./src/app.ts",
     "build": "npm run format && tsc",
-    "test": "mocha -r ts-node/register -r tsconfig-paths/register ./test/**/*.ts",
+    "test": "mocha -r ts-node/register -r tsconfig-paths/register ./test/*.ts",
     "clean": "rm -r ./dist/",
     "format": "prettier --write ./src/**/*.ts ./test/**/*.ts"
   },
