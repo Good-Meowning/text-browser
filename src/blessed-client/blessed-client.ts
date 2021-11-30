@@ -2,7 +2,6 @@ import { DataServer } from "backend-class";
 import blessed from "blessed";
 import { helpBox, mainBox, urlBox } from "./box-attributes";
 
-
 export class BlessedClient {
   private screen: blessed.Widgets.Screen;
   private box: blessed.Widgets.BoxElement;
@@ -15,14 +14,34 @@ export class BlessedClient {
    */
   constructor() {
     this.screen = this.initiateScreen();
-
     this.box = this.initiateBox(mainBox);
-    this.helpBox = this.initiateBox(helpBox);
+
+    // Setup key shortcuts legend
+    this.helpBox = blessed.box(helpBox);
+    this.helpBox.key(["S-h"], (_ch, _key) => {
+      this.screen.remove(this.helpBox);
+      this.screen.render();
+      this.box.focus();
+    });
+
+    // Setup url input box
     this.input = blessed.textbox(urlBox);
+    this.input.key(["escape"], (_ch, _key) => {
+      this.input.cancel();
+    });
+    this.input.key(["enter"], (_ch, _key) => {
+      this.input.submit();
+    });
+    this.input.on("submit", async () => {
+      await this.visitURL(this.input.value);
+      this.screen.render();
+    });
+
     this.dataServer = new DataServer();
 
     // Append our box to the screen
     this.screen.append(this.box);
+    this.screen.append(this.input);
   }
 
   /**
@@ -64,31 +83,10 @@ export class BlessedClient {
     box.key(["h"], (_ch, _key) => {
       this.screen.append(this.helpBox);
       this.screen.render();
+      this.helpBox.focus();
     });
-    box.key(["S-h"], (_ch, _key) => {
-      this.screen.remove(this.helpBox);
-      this.screen.render();
-    });
-
     box.key(["i"], (_ch, _key) => {
-      this.input.key(["escape"], (_ch, _key) => {
-        this.input.cancel();
-      });
-      this.input.key(["enter"], (_ch, _key) => {
-        this.input.submit();
-      });
-      this.input.on("submit", async () => {
-        await this.visitURL(this.input.value);
-        this.screen.remove(this.input);
-        this.screen.render();
-      });
-      this.screen.append(this.input);
       this.input.focus();
-      this.screen.render();
-    });
-
-    box.key(["S-i"], (_ch, _key) => {
-      this.screen.remove(this.input);
       this.screen.render();
     });
 
