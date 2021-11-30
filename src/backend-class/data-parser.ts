@@ -25,12 +25,7 @@ export function getParsedURL(url: string): ParsedURL {
     );
 
   // Extract attributes
-  return {
-    url: url,
-    origin: newURL.origin,
-    href: newURL.href,
-    pathname: newURL.pathname
-  };
+  return { url: newURL.href };
 }
 
 /**
@@ -192,19 +187,18 @@ export function getParsedHref(parsedURL: ParsedURL, href: string) {
   // Empty href
   if (!href) return "";
 
-  // Full URL: href is full URL
-  if (href.startsWith("file://") || href.match("^http[s]?://.+")) return href;
+  // Return entire href if it is a file path
+  if (href.startsWith("file://")) return href;
 
-  // Base URL is not HTTP/HTTPS: not supported
-  if (!parsedURL.url.match("^http[s]?://.+$")) return "";
+  try {
+    // Use URL to edit existing URL
+    const newURL = new URL(href, parsedURL.url);
 
-  // ID: append id to href
-  if (href.startsWith("#")) return `${parsedURL.href}${href}`;
+    // Only accept HTTP/HTTPS
+    if (!newURL.protocol.match(/^http[s]?/)) return "";
 
-  // Root path: append href to origin
-  if (href.startsWith("/")) return `${parsedURL.origin}/${href}`;
-
-  // Otherwise: append href path to URL
-  const pathname = parsedURL.pathname ? parsedURL.pathname : "";
-  return `${parsedURL.origin}/${pathname.replace(/\/.*/, "")}/${href}`;
+    return newURL.href;
+  } catch (_error) {
+    return "";
+  }
 }
