@@ -65,10 +65,10 @@ export class DataServer {
         this.currentURLIndex
       );
       this.anchorURLs = parsedData.urls;
-      return parsedData.parsedData;
+      return [parsedData.parsedData, this.parsedURL.url];
     } else {
       // Otherwise return empty string
-      return "";
+      return ["", ""];
     }
   }
 

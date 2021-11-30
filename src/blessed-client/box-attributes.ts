@@ -1,10 +1,10 @@
 import blessed from "blessed";
 
-const helpBoxContent =
-  "\n Tab - Cycle forward through links \n Shift + tab - Cycle backwards through links \n h - Open Help menu \n Shift + h - close help menu \n i - enter insert mode for url bar, press enter to submit and escape to exit insert mode";
+export const screen: blessed.Widgets.IScreenOptions = {
+  smartCSR: true
+};
 
-export const urlBox: blessed.Widgets.BoxOptions = {
-  label: "Press h for help menu",
+export const inputBox: blessed.Widgets.TextboxOptions = {
   name: "input",
   input: true,
   inputOnFocus: true,
@@ -27,7 +27,20 @@ export const urlBox: blessed.Widgets.BoxOptions = {
 
 export const helpBox: blessed.Widgets.BoxOptions = {
   label: "Help Menu",
-  content: helpBoxContent,
+  content:
+    "\n[Tab] - Cycle forward through links" +
+    "\n[Shift + Tab] - Cycle backwards through links" +
+    "\n[Enter] - Visit selected link" +
+    "\n" +
+    "\n[i] - Enter URL in bar below" +
+    "\n\tType to input URL" +
+    "\n\t[Enter] - Visit entered URL" +
+    "\n\t[Escape] - Exit URL bar" +
+    "\n" +
+    "\n[h] [?] - Open help menu" +
+    "\n\t[Escape] [Shift + h] - Close help menu" +
+    "\n" +
+    "\n[q] [Ctrl + c] - Close browser",
   top: "center",
   left: "center",
   width: "50%",
@@ -46,10 +59,10 @@ export const helpBox: blessed.Widgets.BoxOptions = {
 };
 
 export const mainBox: blessed.Widgets.BoxOptions = {
-  top: "center",
+  top: "0",
   left: "center",
   width: "100%",
-  height: "100%",
+  height: "80%",
   tags: true,
   border: {
     type: "line"
@@ -59,9 +72,15 @@ export const mainBox: blessed.Widgets.BoxOptions = {
     bg: "black",
     border: {
       fg: "#f0f0f0"
+    },
+    scrollbar: {
+      bg: "blue" // TODO: not working?
     }
   },
-  // enable scrolling with mouse
+  // Enable scrolling with keys
+  keys: true,
+  vi: true,
+  // Enable scrolling with mouse
   scrollable: true,
   alwaysScroll: true,
   mouse: true

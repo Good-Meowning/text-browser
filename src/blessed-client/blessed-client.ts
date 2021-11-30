@@ -1,107 +1,124 @@
 import { DataServer } from "backend-class";
 import blessed from "blessed";
-import { helpBox, mainBox, urlBox } from "./box-attributes";
+import { helpBox, mainBox, screen, inputBox } from "./box-attributes";
 
 export class BlessedClient {
   private screen: blessed.Widgets.Screen;
-  private box: blessed.Widgets.BoxElement;
+  private mainBox: blessed.Widgets.BoxElement;
   private helpBox: blessed.Widgets.BoxElement;
-  private input: blessed.Widgets.TextboxElement;
+  private inputBox: blessed.Widgets.TextboxElement;
   private dataServer: DataServer;
 
   /**
    * Create core elements
    */
   constructor() {
-    this.screen = this.initiateScreen();
-    this.box = this.initiateBox(mainBox);
-
-    // Setup key shortcuts legend
+    // Instantiate Blessed attributes
+    this.screen = blessed.screen(screen);
+    this.mainBox = blessed.box(mainBox);
     this.helpBox = blessed.box(helpBox);
-    this.helpBox.key(["S-h"], (_ch, _key) => {
-      this.screen.remove(this.helpBox);
-      this.screen.render();
-      this.box.focus();
-    });
+    this.inputBox = blessed.textbox(inputBox);
 
-    // Setup url input box
-    this.input = blessed.textbox(urlBox);
-    this.input.key(["escape"], (_ch, _key) => {
-      this.input.cancel();
-    });
-    this.input.key(["enter"], (_ch, _key) => {
-      this.input.submit();
-    });
-    this.input.on("submit", async () => {
-      await this.visitURL(this.input.value);
-      this.screen.render();
-    });
+    // Set up keypress listeners
+    this.initiateScreen();
+    this.initiateMainBox();
+    this.initiateHelpBox();
+    this.initiateInputBox();
 
+    // Instantiate new data server
     this.dataServer = new DataServer();
 
     // Append our box to the screen
-    this.screen.append(this.box);
-    this.screen.append(this.input);
+    this.screen.append(this.mainBox);
+    this.screen.append(this.inputBox);
   }
 
   /**
    * Initiates the screen
    */
   private initiateScreen() {
-    // Create a screen object
-    const screen = blessed.screen({
-      smartCSR: true
-    });
-
     // Set screen title
-    screen.title = "Good Meowning!";
+    this.screen.title = "Good Meowning!";
 
-    // Quit on Escape, q, or Control-C
-    screen.key(["escape", "q", "C-c"], (_ch, _key) => process.exit(0));
-
-    return screen;
+    // Quit on Control-C or q
+    this.screen.key(["q", "C-c"], (_ch, _key) => process.exit(0));
   }
 
   /**
-   * Initiates a big box element
+   * Set up keypress listeners for the main display box
    */
-  private initiateBox(attributes: blessed.Widgets.BoxOptions) {
-    // Create a box perfectly centered horizontally and vertically
-    const box = blessed.box(attributes);
-
-    // Setup keypress handlers
-    box.key(["enter"], (_ch, _key) => {
+  private initiateMainBox() {
+    this.mainBox.key(["enter"], (_ch, _key) => {
       const hrefURL = this.dataServer.getHrefURL();
       if (hrefURL) this.visitURL(hrefURL);
     });
-    box.key(["tab"], (_ch, _key) =>
+    this.mainBox.key(["tab"], (_ch, _key) =>
       this.updateContent(this.dataServer.renderPage(1))
     );
-    box.key(["S-tab"], (_ch, _key) =>
+    this.mainBox.key(["S-tab"], (_ch, _key) =>
       this.updateContent(this.dataServer.renderPage(-1))
     );
-    box.key(["h"], (_ch, _key) => {
+    this.mainBox.key(["h", "?"], (_ch, _key) => {
       this.screen.append(this.helpBox);
-      this.screen.render();
       this.helpBox.focus();
-    });
-    box.key(["i"], (_ch, _key) => {
-      this.input.focus();
       this.screen.render();
     });
+    this.mainBox.key(["i"], (_ch, _key) => {
+      this.inputBox.setLabel("Type URL here:");
+      this.inputBox.focus();
+      this.screen.render();
+    });
+  }
 
-    return box;
+  /**
+   * Set up keypress listeners for the help popup box
+   */
+  private initiateHelpBox() {
+    // Setup key shortcuts legend
+    this.helpBox.key(["escape", "S-h"], (_ch, _key) => {
+      this.screen.remove(this.helpBox);
+      this.screen.render();
+      this.mainBox.focus();
+    });
+  }
+
+  /**
+   * Set up keypress listeners for the URL input box
+   */
+  private initiateInputBox() {
+    // Set label
+    const label = "Press [h] for help menu";
+    this.inputBox.setLabel(label);
+
+    this.inputBox.key(["escape"], (_ch, _key) => {
+      this.inputBox.setLabel(label);
+      this.inputBox.cancel();
+      this.mainBox.focus();
+      this.screen.render();
+    });
+    this.inputBox.key(["enter"], (_ch, _key) => this.inputBox.submit());
+    this.inputBox.on("submit", () => {
+      // Force input label to reset
+      this.inputBox.setLabel(label);
+      this.screen.render();
+
+      if (this.inputBox.value) {
+        this.visitURL(this.inputBox.value);
+        this.inputBox.clearValue();
+      }
+    });
   }
 
   /**
    * Update the box content and render it on the UI
    * @param content
    */
-  private updateContent(parsedData: string) {
-    this.box.setContent(parsedData);
+  private updateContent([parsedData, url]: string[]) {
+    this.mainBox.setLabel(url);
+    this.mainBox.setContent(parsedData);
 
     // Focus our element
-    this.box.focus();
+    this.mainBox.focus();
 
     // Render the screen
     this.screen.render();
@@ -123,7 +140,7 @@ export class BlessedClient {
       console.error(err);
       // print a general err msg for now
       const data = "An unexpected error occured";
-      this.updateContent(data);
+      this.updateContent([data, url]);
     }
   }
 }
