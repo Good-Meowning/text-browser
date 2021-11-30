@@ -90,22 +90,23 @@ export function parseTree(
         break;
 
       case "a":
-        if (node.attribs["href"]) {
-          // Add number to href
-          suffix = `[${prevURL + urls.length}](${node.attribs["href"]})`;
+        const href = node.attribs["href"] ? node.attribs["href"] : "";
 
-          // Check if this URL is currently selected and add bg colour
-          if (prevURL + urls.length === selectedURL) {
-            prefix = "{red-bg}";
-            suffix += "{/red-bg}";
-          } else {
-            prefix = "{blue-bg}";
-            suffix += "{/blue-bg}";
-          }
+        // Add number to href
+        suffix = `[${prevURL + urls.length}]("${href}")`;
 
-          // Append to list of URLs
-          urls.push(node.attribs["href"]);
+        // Check if this URL is currently selected and add bg colour
+        if (prevURL + urls.length === selectedURL) {
+          prefix = "{red-bg}";
+          suffix += "{/red-bg}";
+        } else {
+          prefix = "{blue-bg}";
+          suffix += "{/blue-bg}";
         }
+
+        // Append to list of URLs
+        urls.push(href);
+      // Add underline prefix and suffix
       case "u":
         prefix = "{underline}" + prefix;
         suffix += "{/underline}";
@@ -116,19 +117,31 @@ export function parseTree(
         suffix = "{/blink}";
         break;
 
+      case "b":
+        prefix = "{bold}";
+        suffix = "{/bold}";
+        break;
+
+      // These tags all need newline suffix
       case "h1":
       case "h2":
       case "h3":
       case "h4":
       case "h5":
       case "h6":
-      case "b":
         prefix = "{bold}";
         suffix = "{/bold}";
-        break;
-
+      case "div":
+      case "p":
       case "br":
-        prefix = "\n";
+      case "hr":
+      case "header":
+      case "footer":
+      case "ul":
+      case "li":
+      case "canvas":
+      case "form":
+        suffix += "\n\n";
 
       default:
         break;
@@ -137,18 +150,32 @@ export function parseTree(
     // Traverse tree for text with DFS
     let parsedData = "";
     node.childNodes.forEach((childNode) => {
+      // Parse data for child node
       const nextParsedData = parseTree(
         childNode,
         parsedURL,
         selectedURL,
         prevURL + urls.length
       );
+
+      // Add space separator between children node texts
+      if (
+        parsedData &&
+        nextParsedData.parsedData &&
+        parsedData.match(/\S$/) &&
+        nextParsedData.parsedData.match(/^\S/)
+      ) {
+        parsedData += " ";
+      }
+
+      // Store parsed data
       parsedData += nextParsedData.parsedData;
+
+      // Store anchor tag URLs
       urls.push(...nextParsedData.urls);
     });
-    parsedData = prefix + parsedData + suffix;
-    if (parsedData) parsedData += "\n";
-    return { parsedData: parsedData, urls: urls };
+
+    return { parsedData: prefix + parsedData + suffix, urls: urls };
   }
 
   // Node is neither text nor HTML tag
