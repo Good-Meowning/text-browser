@@ -43,8 +43,8 @@ export const helpBox: blessed.Widgets.BoxOptions = {
     "\n[q] [Ctrl + c] - Close browser",
   top: "center",
   left: "center",
-  width: "50%",
-  height: "50%",
+  width: "60%",
+  height: "60%",
   tags: true,
   border: {
     type: "line"
@@ -55,7 +55,10 @@ export const helpBox: blessed.Widgets.BoxOptions = {
     border: {
       fg: "#f0f0f0"
     }
-  }
+  },
+  scrollable: true,
+  alwaysScroll: true,
+  mouse: true
 };
 
 export const mainBox: blessed.Widgets.BoxOptions = {
