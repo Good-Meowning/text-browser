@@ -65,7 +65,7 @@ export class BlessedClient {
     this.mainBox.key(["n", "right"], (_ch, _key) => this.changeTab(1));
     this.mainBox.key(["S-n", "left"], (_ch, _key) => this.changeTab(-1));
     this.mainBox.key(["C-n", "C-t"], (_ch, _key) => this.createTab());
-    this.mainBox.key(["x", "C-S-n", "C-w"], (_ch, _key) => this.removeTab());
+    this.mainBox.key(["x", "C-w"], (_ch, _key) => this.removeTab());
 
     // Focus other windows
     this.mainBox.key(["h", "?"], (_ch, _key) => {
