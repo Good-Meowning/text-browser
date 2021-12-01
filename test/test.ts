@@ -110,11 +110,16 @@ describe("Data server test", () => {
         it(url, async () => {
           const dataServer = new DataServer();
           await dataServer.visitURL(url);
-          chai.assert.equal(dataServer.renderPage(), output);
-          chai.assert.equal(dataServer.renderPage(3), outputForward);
-          chai.assert.equal(dataServer.renderPage(-4), outputBackward);
+          chai.assert.deepEqual(dataServer.renderPage(), [output, parsedURL]);
+          chai.assert.deepEqual(dataServer.renderPage(3), [
+            outputForward,
+            parsedURL
+          ]);
+          chai.assert.deepEqual(dataServer.renderPage(-4), [
+            outputBackward,
+            parsedURL
+          ]);
           chai.assert.equal(dataServer.getHrefURL(), href);
-          // chai.assert.equal(dataServer.renderPage(), [output, parsedURL]);
         });
       }
     );
@@ -147,11 +152,16 @@ describe("Data server test", () => {
         it(url, async () => {
           const dataServer = new DataServer();
           await dataServer.visitURL(url);
-          chai.assert.equal(dataServer.renderPage(), output);
-          chai.assert.equal(dataServer.renderPage(6), outputForward);
-          chai.assert.equal(dataServer.renderPage(-8), outputBackward);
+          chai.assert.deepEqual(dataServer.renderPage(), [output, parsedURL]);
+          chai.assert.deepEqual(dataServer.renderPage(6), [
+            outputForward,
+            parsedURL
+          ]);
+          chai.assert.deepEqual(dataServer.renderPage(-8), [
+            outputBackward,
+            parsedURL
+          ]);
           chai.assert.equal(dataServer.getHrefURL(), href);
-          // chai.assert.equal(dataServer.renderPage(), [output, parsedURL]);
         });
       }
     );
