@@ -49,10 +49,10 @@ describe("Data parser test", () => {
     });
 
     // Negative cases
-    // it("Empty URL", () => {
-    //   const parsedURL = getParsedURL("");
-    //   chai.assert.equal(getParsedHref(parsedURL, "anything"), "");
-    // });
+    it("Invalid href URL", () => {
+      const parsedURL = getParsedURL("http://google.ca");
+      chai.assert.equal(getParsedHref(parsedURL, "http://:invalid"), "");
+    });
   });
 
   // Local files via fs
