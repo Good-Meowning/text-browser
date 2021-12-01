@@ -78,9 +78,13 @@ export const mainBox: blessed.Widgets.BoxOptions = {
     border: {
       fg: "#f0f0f0"
     },
-    scrollbar: {
-      bg: "blue" // TODO: not working?
-    }
+  },
+
+  scrollbar: {
+    ch: '',
+    track: {
+      bg: 'blue'
+    },
   },
   // Enable scrolling with keys
   keys: true,
