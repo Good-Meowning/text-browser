@@ -8,9 +8,6 @@ import * as cheerio from "cheerio";
 
 export interface ParsedURL {
   url: string;
-  origin?: string;
-  href?: string;
-  pathname?: string;
   filepath?: string;
 }
 

@@ -25,12 +25,7 @@ export function getParsedURL(url: string): ParsedURL {
     );
 
   // Extract attributes
-  return {
-    url: url,
-    origin: newURL.origin,
-    href: newURL.href,
-    pathname: newURL.pathname
-  };
+  return { url: newURL.href };
 }
 
 /**
@@ -63,7 +58,15 @@ export function parseTree(
   if (!node || isComment(node)) return { parsedData: "", urls: [] };
 
   // Node is only text
-  if (isText(node)) return { parsedData: escape(node.data), urls: [] };
+  // Trim each line and rejoin non-empty lines with spaces
+  if (isText(node)) {
+    const escapedData = escape(node.data);
+    const splitLines = escapedData.split(/[\r\n]+/);
+    const trimmedLines = splitLines.map((s) => s.trim());
+    const filteredLines = trimmedLines.filter((s) => s);
+    const joinedLines = filteredLines.join(" ");
+    return { parsedData: joinedLines, urls: [] };
+  }
 
   // Node is HTML tag
   if (isTag(node)) {
@@ -82,22 +85,23 @@ export function parseTree(
         break;
 
       case "a":
-        if (node.attribs["href"]) {
-          // Add number to href
-          suffix = `[${prevURL + urls.length}](${node.attribs["href"]})`;
+        const href = node.attribs["href"] ? node.attribs["href"] : "";
 
-          // Check if this URL is currently selected and add bg colour
-          if (prevURL + urls.length === selectedURL) {
-            prefix = "{red-bg}";
-            suffix += "{/red-bg}";
-          } else {
-            prefix = "{blue-bg}";
-            suffix += "{/blue-bg}";
-          }
+        // Add number to href
+        suffix = `[${prevURL + urls.length}]("${href}")`;
 
-          // Append to list of URLs
-          urls.push(node.attribs["href"]);
+        // Check if this URL is currently selected and add bg colour
+        if (prevURL + urls.length === selectedURL) {
+          prefix = "{red-bg}";
+          suffix += "{/red-bg}";
+        } else {
+          prefix = "{blue-bg}";
+          suffix += "{/blue-bg}";
         }
+
+        // Append to list of URLs
+        urls.push(href);
+      // Add underline prefix and suffix
       case "u":
         prefix = "{underline}" + prefix;
         suffix += "{/underline}";
@@ -108,16 +112,31 @@ export function parseTree(
         suffix = "{/blink}";
         break;
 
+      case "b":
+        prefix = "{bold}";
+        suffix = "{/bold}";
+        break;
+
+      // These tags all need newline suffix
       case "h1":
       case "h2":
       case "h3":
       case "h4":
       case "h5":
       case "h6":
-      case "b":
         prefix = "{bold}";
         suffix = "{/bold}";
-        break;
+      case "div":
+      case "p":
+      case "br":
+      case "hr":
+      case "header":
+      case "footer":
+      case "ul":
+      case "li":
+      case "canvas":
+      case "form":
+        suffix += "\n\n";
 
       default:
         break;
@@ -126,13 +145,28 @@ export function parseTree(
     // Traverse tree for text with DFS
     let parsedData = "";
     node.childNodes.forEach((childNode) => {
+      // Parse data for child node
       const nextParsedData = parseTree(
         childNode,
         parsedURL,
         selectedURL,
         prevURL + urls.length
       );
+
+      // Add space separator between children node texts
+      if (
+        parsedData &&
+        nextParsedData.parsedData &&
+        parsedData.match(/\S$/) &&
+        nextParsedData.parsedData.match(/^\S/)
+      ) {
+        parsedData += " ";
+      }
+
+      // Store parsed data
       parsedData += nextParsedData.parsedData;
+
+      // Store anchor tag URLs
       urls.push(...nextParsedData.urls);
     });
 
@@ -153,19 +187,18 @@ export function getParsedHref(parsedURL: ParsedURL, href: string) {
   // Empty href
   if (!href) return "";
 
-  // Full URL: href is full URL
-  if (href.startsWith("file://") || href.match("^http[s]?://.+")) return href;
+  // Return entire href if it is a file path
+  if (href.startsWith("file://")) return href;
 
-  // Base URL is not HTTP/HTTPS: not supported
-  if (!parsedURL.url.match("^http[s]?://.+$")) return "";
+  try {
+    // Use URL to edit existing URL
+    const newURL = new URL(href, parsedURL.url);
 
-  // ID: append id to href
-  if (href.startsWith("#")) return `${parsedURL.href}${href}`;
+    // Only accept HTTP/HTTPS
+    if (!newURL.protocol.match(/^http[s]?/)) return "";
 
-  // Root path: append href to origin
-  if (href.startsWith("/")) return `${parsedURL.origin}/${href}`;
-
-  // Otherwise: append href path to URL
-  const pathname = parsedURL.pathname ? parsedURL.pathname : "";
-  return `${parsedURL.origin}/${pathname.replace(/\/.*/, "")}/${href}`;
+    return newURL.href;
+  } catch (_error) {
+    return "";
+  }
 }
