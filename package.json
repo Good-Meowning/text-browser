@@ -4,9 +4,11 @@
   "version": "1.0.0",
   "main": "app.ts",
   "scripts": {
-    "start": "NODE_PATH=./src/ ts-node-dev ./src/app.ts",
+    "start": "NODE_PATH=./src/ ts-node-dev -- ./src/app.ts",
+    "postinstall": "npx patch-package",
+    "debug": "NODE_PATH=./src/ ts-node-dev --transpile-only --respawn --inspect -- ./src/app.ts",
     "build": "npm run format && tsc",
-    "test": "mocha -r ts-node/register -r tsconfig-paths/register ./test/**/*.ts",
+    "test": "mocha -r ts-node/register -r tsconfig-paths/register ./test/*.ts",
     "clean": "rm -r ./dist/",
     "format": "prettier --write ./src/**/*.ts ./test/**/*.ts"
   },
@@ -37,6 +39,7 @@
     "prettier": "^2.4.1",
     "ts-node-dev": "^1.1.8",
     "tsconfig-paths": "^3.11.0",
-    "typescript": "^4.4.3"
+    "typescript": "^4.4.3",
+    "patch-package": "^6.4.7"
   }
 }

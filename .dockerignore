@@ -8,3 +8,4 @@
 !/package-lock.json
 !/package.json
 !/tsconfig.json
+!/patches/*.patch
