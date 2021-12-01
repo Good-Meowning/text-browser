@@ -58,6 +58,8 @@ export const helpBox: blessed.Widgets.BoxOptions = {
   },
   scrollable: true,
   alwaysScroll: true,
+  keys: true,
+  vi: true,
   mouse: true
 };
 
