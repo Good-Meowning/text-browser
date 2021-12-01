@@ -1,7 +1,7 @@
 {
   "name": "text-browser",
   "description": "A text mode only browser, like lynx but cooler",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "main": "app.ts",
   "scripts": {
     "start": "NODE_PATH=./src/ ts-node-dev -- ./src/app.ts",
