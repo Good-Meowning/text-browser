@@ -20,7 +20,7 @@ export const inputBox: blessed.Widgets.TextboxOptions = {
     fg: "white",
     bg: "black",
     border: {
-      fg: "#f0f0f0"
+      fg: "white"
     }
   }
 };
@@ -53,7 +53,15 @@ export const helpBox: blessed.Widgets.BoxOptions = {
     fg: "white",
     bg: "black",
     border: {
-      fg: "#f0f0f0"
+      fg: "white"
+    }
+  },
+  scrollbar: {
+    style: {
+      bg: "white"
+    },
+    track: {
+      bg: "black"
     }
   },
   scrollable: true,
@@ -76,10 +84,15 @@ export const mainBox: blessed.Widgets.BoxOptions = {
     fg: "white",
     bg: "black",
     border: {
-      fg: "#f0f0f0"
+      fg: "white"
+    }
+  },
+  scrollbar: {
+    style: {
+      bg: "white"
     },
-    scrollbar: {
-      bg: "blue" // TODO: not working?
+    track: {
+      fg: "black"
     }
   },
   // Enable scrolling with keys
