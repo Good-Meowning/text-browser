@@ -56,6 +56,14 @@ export const helpBox: blessed.Widgets.BoxOptions = {
       fg: "#f0f0f0"
     }
   },
+  scrollbar: {
+    style: {
+      bg: "white"
+    },
+    track: {
+      bg: "black"
+    }
+  },
   scrollable: true,
   alwaysScroll: true,
   keys: true,
@@ -77,14 +85,15 @@ export const mainBox: blessed.Widgets.BoxOptions = {
     bg: "black",
     border: {
       fg: "#f0f0f0"
-    },
+    }
   },
-
   scrollbar: {
-    ch: '',
-    track: {
-      bg: 'blue'
+    style: {
+      bg: "white"
     },
+    track: {
+      fg: "black"
+    }
   },
   // Enable scrolling with keys
   keys: true,
