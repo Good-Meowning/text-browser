@@ -1,6 +1,6 @@
 #!/bin/bash
 if [ "$1" = '-h' ] || [ "$1" = '--help' ]; then
-	echo "Usage: "$0""
+	echo "Usage: $0"
 	exit 0
 fi
 
