@@ -74,7 +74,7 @@ export class BlessedClient {
       this.screen.render();
     });
     this.mainBox.key(["i"], (_ch, _key) => {
-      this.inputBox.setLabel("Type URL here:");
+      this.inputBox.setLabel("Type URL or URL index here:");
       this.inputBox.focus();
       this.screen.render();
     });
@@ -119,14 +119,10 @@ export class BlessedClient {
       let url = this.inputBox.value.trim();
 
       // Parse anchor href URL indicies
-      if (Number.isInteger(url)) {
+      if (url.match(/^[0-9]+$/)) {
         const index = parseInt(url);
         url = this.dataServers[this.activeDS].getHrefURL(index);
-      } else if (
-        url.startsWith("[") &&
-        url.endsWith("]") &&
-        Number.isInteger(url.substring(1, url.length - 1))
-      ) {
+      } else if (url.match(/^\[[0-9]+\]$/)) {
         const index = parseInt(url.substring(1, url.length - 1));
         url = this.dataServers[this.activeDS].getHrefURL(index);
       }
@@ -200,7 +196,7 @@ export class BlessedClient {
       this.updateContent(data);
     } catch (err) {
       // TODO: catch different error code and update the error msg
-      console.error(err);
+      // console.error(err);
       // print a general err msg for now
       const data = "An unexpected error occured";
       this.updateContent([data, url]);

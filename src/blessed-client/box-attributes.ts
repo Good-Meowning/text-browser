@@ -40,8 +40,8 @@ export const helpBox: blessed.Widgets.BoxOptions = {
     "\n[Ctrl+t] [Ctrl+n] - Open new tab" +
     "\n[Ctrl+w] [x] - Close current tab" +
     "\n" +
-    "\n[i] - Enter URL in bar below" +
-    "\n\tType to input URL" +
+    "\n[i] - Enter URL or index in bar below" +
+    "\n\tType to input URL (e.g. 10, [10], google.ca, file:///)" +
     "\n\t[Enter] - Visit entered URL" +
     "\n\t[Escape] - Exit URL bar" +
     "\n" +
