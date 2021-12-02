@@ -20,7 +20,7 @@ export const inputBox: blessed.Widgets.TextboxOptions = {
     fg: "white",
     bg: "black",
     border: {
-      fg: "#f0f0f0"
+      fg: "white"
     }
   }
 };
@@ -53,7 +53,7 @@ export const helpBox: blessed.Widgets.BoxOptions = {
     fg: "white",
     bg: "black",
     border: {
-      fg: "#f0f0f0"
+      fg: "white"
     }
   },
   scrollbar: {
@@ -84,7 +84,7 @@ export const mainBox: blessed.Widgets.BoxOptions = {
     fg: "white",
     bg: "black",
     border: {
-      fg: "#f0f0f0"
+      fg: "white"
     }
   },
   scrollbar: {
