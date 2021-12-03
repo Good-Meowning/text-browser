@@ -100,14 +100,6 @@ export class BlessedClient {
       this.screen.render();
       this.mainBox.focus();
     });
-    this.historyBox.key(["tab"], (_ch, _key) => {
-      this.historyIndex = ((this.historyIndex + 1 % this.history.length) + this.history.length) % this.history.length;
-      this.updateHistoryContent();
-    });
-    this.historyBox.key(["enter"], (_ch, _key) => {
-      this.screen.remove(this.historyBox);
-      this.visitURL(this.history[this.historyIndex]);
-    });
   }
 
   /**
@@ -156,6 +148,18 @@ export class BlessedClient {
       this.screen.remove(this.historyBox);
       this.screen.render();
       this.mainBox.focus();
+    });
+    this.historyBox.key(["tab"], (_ch, _key) => {
+      this.historyIndex = ((this.historyIndex + 1 % this.history.length) + this.history.length) % this.history.length;
+      this.updateHistoryContent();
+    });
+    this.historyBox.key(["S-tab"], (_ch, _key) => {
+      this.historyIndex = ((this.historyIndex - 1 % this.history.length) + this.history.length) % this.history.length;
+      this.updateHistoryContent();
+    });
+    this.historyBox.key(["enter"], (_ch, _key) => {
+      this.screen.remove(this.historyBox);
+      this.visitURL(this.history[this.historyIndex]);
     });
   }
 
@@ -234,7 +238,7 @@ export class BlessedClient {
    */
   async visitURL(url: string) {
     // regardless if valid, set the url to the front of the history
-    this.history.push(url);
+    this.history.unshift(url);
     try {
       // Set URL and HTML data in data server
       await this.dataServers[this.activeDS].visitURL(url);
