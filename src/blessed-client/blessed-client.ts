@@ -7,7 +7,10 @@ export class BlessedClient {
   private mainBox: blessed.Widgets.BoxElement;
   private helpBox: blessed.Widgets.BoxElement;
   private inputBox: blessed.Widgets.TextboxElement;
+  private historyBox: blessed.Widgets.BoxElement;
   private dataServers: DataServer[] = [];
+  private history: string[] = [];
+  private historyIndex = 0;
   private activeDS = -1;
 
   /**
@@ -19,12 +22,14 @@ export class BlessedClient {
     this.mainBox = blessed.box(mainBox);
     this.helpBox = blessed.box(helpBox);
     this.inputBox = blessed.textbox(inputBox);
+    this.historyBox = blessed.box(mainBox);
 
     // Set up keypress listeners
     this.initiateScreen();
     this.initiateMainBox();
     this.initiateHelpBox();
     this.initiateInputBox();
+    this.initiateHistoryBox();
 
     // Append our box to the screen
     this.screen.append(this.mainBox);
@@ -78,6 +83,10 @@ export class BlessedClient {
       this.inputBox.focus();
       this.screen.render();
     });
+    this.mainBox.key(["t"], (_ch, _key) => {
+      this.screen.append(this.historyBox);
+      this.updateHistoryContent();
+    });
   }
 
   /**
@@ -86,9 +95,18 @@ export class BlessedClient {
   private initiateHelpBox() {
     // Setup key shortcuts legend
     this.helpBox.key(["escape", "S-h"], (_ch, _key) => {
+      this.historyIndex = 0;
       this.screen.remove(this.helpBox);
       this.screen.render();
       this.mainBox.focus();
+    });
+    this.historyBox.key(["tab"], (_ch, _key) => {
+      this.historyIndex = ((this.historyIndex + 1 % this.history.length) + this.history.length) % this.history.length;
+      this.updateHistoryContent();
+    });
+    this.historyBox.key(["enter"], (_ch, _key) => {
+      this.screen.remove(this.historyBox);
+      this.visitURL(this.history[this.historyIndex]);
     });
   }
 
@@ -130,6 +148,14 @@ export class BlessedClient {
       // Visit URL and clear input value
       this.visitURL(url);
       this.inputBox.clearValue();
+    });
+  }
+
+  private initiateHistoryBox() {
+    this.historyBox.key(["escape", "S-h"], (_ch, _key) => {
+      this.screen.remove(this.historyBox);
+      this.screen.render();
+      this.mainBox.focus();
     });
   }
 
@@ -183,11 +209,32 @@ export class BlessedClient {
     this.screen.render();
   }
 
+  private updateHistoryContent() {
+    let data: string = "";
+    for (let i = 0; i < this.history.length; i++) {
+      const url = this.history[i];
+      if (this.historyIndex == i) {
+        data += "{red-bg}";
+      }
+      data += url;
+      if (this.historyIndex == i) {
+        data += "{/red-bg}";
+      }
+      data += "\n";
+    }
+    this.historyBox.setLabel("Browser History");
+    this.historyBox.setContent(data);
+    this.historyBox.focus();
+    this.screen.render();
+  }
+
   /**
    * Visit HTML page and render page
    * @param url
    */
   async visitURL(url: string) {
+    // regardless if valid, set the url to the front of the history
+    this.history.push(url);
     try {
       // Set URL and HTML data in data server
       await this.dataServers[this.activeDS].visitURL(url);
