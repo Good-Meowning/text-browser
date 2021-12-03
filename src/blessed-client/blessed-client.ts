@@ -95,7 +95,6 @@ export class BlessedClient {
   private initiateHelpBox() {
     // Setup key shortcuts legend
     this.helpBox.key(["escape", "S-h"], (_ch, _key) => {
-      this.historyIndex = 0;
       this.screen.remove(this.helpBox);
       this.screen.render();
       this.mainBox.focus();
@@ -145,6 +144,7 @@ export class BlessedClient {
 
   private initiateHistoryBox() {
     this.historyBox.key(["escape", "S-h"], (_ch, _key) => {
+      this.historyIndex = 0;
       this.screen.remove(this.historyBox);
       this.screen.render();
       this.mainBox.focus();
