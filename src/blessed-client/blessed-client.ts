@@ -83,7 +83,7 @@ export class BlessedClient {
       this.inputBox.focus();
       this.screen.render();
     });
-    this.mainBox.key(["t"], (_ch, _key) => {
+    this.mainBox.key(["C-h", "t"], (_ch, _key) => {
       this.screen.append(this.historyBox);
       this.updateHistoryContent();
     });
