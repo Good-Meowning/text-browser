@@ -84,6 +84,7 @@ export class BlessedClient {
       this.screen.render();
     });
     this.mainBox.key(["t"], (_ch, _key) => {
+      this.historyIndex = 0;
       this.screen.remove(this.mainBox);
       this.screen.append(this.historyBox);
       this.updateHistoryContent();
@@ -148,7 +149,6 @@ export class BlessedClient {
    */
   private initiateHistoryBox() {
     this.historyBox.key(["escape", "S-h"], (_ch, _key) => {
-      this.historyIndex = 0;
       this.screen.remove(this.historyBox);
       this.screen.append(this.mainBox);
       this.screen.render();
