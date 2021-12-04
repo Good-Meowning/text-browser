@@ -58,7 +58,8 @@ Credits: [github.com/xiaoluoboding/repository-tree](https://github.com/xiaoluobo
 ```
 /
 ├─ docs/
-│  └─ Assignment documentation files
+│  ├─ Assignment documentation files
+│  └─ Including validation, verification, and acceptance criteria discussions
 ├─ src/
 │  └─ TypeScript source code files
 ├─ test/
