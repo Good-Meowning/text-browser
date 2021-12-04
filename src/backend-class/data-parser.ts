@@ -10,7 +10,7 @@ import { getHTMLString, ParsedData, ParsedURL } from "backend-class";
  */
 export function getParsedURL(url: string): ParsedURL {
   // URL is file path
-  if (url.startsWith("file://")) return { url: url, filepath: url.slice(7) };
+  if (url.match("^file://.+")) return { url: url, filepath: url.slice(7) };
 
   // Force URL with unspecified protocol with HTTP
   if (!url.match("^http[s]?://.+")) url = `http://${url}`;
@@ -31,7 +31,7 @@ export function getParsedURL(url: string): ParsedURL {
 /**
  * Get and parse the HTML data at URL
  * @param parsedURL
- * @returns
+ * @returns cheerio.Element of the body tag of given HTML
  */
 export async function getBodyElement(parsedURL: ParsedURL) {
   // Fetch HTML string
