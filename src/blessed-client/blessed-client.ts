@@ -195,11 +195,11 @@ export class BlessedClient {
       const data = this.dataServers[this.activeDS].renderPage();
       this.updateContent(data);
     } catch (err) {
-      // TODO: catch different error code and update the error msg
-      // console.error(err);
-      // print a general err msg for now
-      const data = "An unexpected error occured";
-      this.updateContent([data, url]);
+      if (err && err.message) {
+        this.updateContent([err.message, url]);
+      } else {
+        this.updateContent(["An unexpected error occured", url]);
+      }
     }
   }
 }
