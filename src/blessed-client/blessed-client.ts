@@ -7,7 +7,10 @@ export class BlessedClient {
   private mainBox: blessed.Widgets.BoxElement;
   private helpBox: blessed.Widgets.BoxElement;
   private inputBox: blessed.Widgets.TextboxElement;
+  private historyBox: blessed.Widgets.BoxElement;
   private dataServers: DataServer[] = [];
+  private history: string[] = [];
+  private historyIndex = 0;
   private activeDS = -1;
 
   /**
@@ -19,12 +22,14 @@ export class BlessedClient {
     this.mainBox = blessed.box(mainBox);
     this.helpBox = blessed.box(helpBox);
     this.inputBox = blessed.textbox(inputBox);
+    this.historyBox = blessed.box(mainBox);
 
     // Set up keypress listeners
     this.initiateScreen();
     this.initiateMainBox();
     this.initiateHelpBox();
     this.initiateInputBox();
+    this.initiateHistoryBox();
 
     // Append our box to the screen
     this.screen.append(this.mainBox);
@@ -77,6 +82,12 @@ export class BlessedClient {
       this.inputBox.setLabel("Type URL or URL index here:");
       this.inputBox.focus();
       this.screen.render();
+    });
+    this.mainBox.key(["t"], (_ch, _key) => {
+      this.historyIndex = 0;
+      this.screen.remove(this.mainBox);
+      this.screen.append(this.historyBox);
+      this.updateHistoryContent();
     });
   }
 
@@ -134,6 +145,35 @@ export class BlessedClient {
   }
 
   /**
+   * Set up keypress listeners for the history box
+   */
+  private initiateHistoryBox() {
+    this.historyBox.key(["escape", "S-h"], (_ch, _key) => {
+      this.screen.remove(this.historyBox);
+      this.screen.append(this.mainBox);
+      this.screen.render();
+      this.mainBox.focus();
+    });
+    this.historyBox.key(["tab"], (_ch, _key) => {
+      this.historyIndex =
+        (this.historyIndex + (1 % this.history.length) + this.history.length) %
+        this.history.length;
+      this.updateHistoryContent();
+    });
+    this.historyBox.key(["S-tab"], (_ch, _key) => {
+      this.historyIndex =
+        (this.historyIndex - (1 % this.history.length) + this.history.length) %
+        this.history.length;
+      this.updateHistoryContent();
+    });
+    this.historyBox.key(["enter"], (_ch, _key) => {
+      this.screen.remove(this.historyBox);
+      this.screen.append(this.mainBox);
+      this.visitURL(this.history[this.historyIndex]);
+    });
+  }
+
+  /**
    * Change tab and updates main box content
    * @param direction
    */
@@ -147,12 +187,18 @@ export class BlessedClient {
     this.updateContent(this.dataServers[this.activeDS].renderPage());
   }
 
+  /**
+   * Create new tab and set it as the active tab
+   */
   private createTab() {
     this.dataServers.push(new DataServer());
     this.activeDS = this.dataServers.length - 1;
     this.updateContent(this.dataServers[this.activeDS].renderPage());
   }
 
+  /**
+   * Remove active tab, and create new tab if no tabs remain
+   */
   private removeTab() {
     this.dataServers.splice(this.activeDS, 1);
     if (this.dataServers.length <= 0) this.createTab();
@@ -184,16 +230,43 @@ export class BlessedClient {
   }
 
   /**
+   * Update history page
+   */
+  private updateHistoryContent() {
+    let data = "";
+    for (let i = 0; i < this.history.length; i++) {
+      const url = this.history[i];
+      if (this.historyIndex === i) {
+        data += "{red-bg}";
+      }
+      // Do not let URLs be empty
+      if (!url) data += " ";
+      data += url;
+      if (this.historyIndex === i) {
+        data += "{/red-bg}";
+      }
+      data += "\n";
+    }
+    this.historyBox.setLabel("Browser History");
+    this.historyBox.setContent(data);
+    this.historyBox.focus();
+    this.screen.render();
+  }
+
+  /**
    * Visit HTML page and render page
    * @param url
    */
   async visitURL(url: string) {
+    // regardless if valid, set the url to the front of the history
+    this.history.unshift(url);
     try {
       // Set URL and HTML data in data server
       await this.dataServers[this.activeDS].visitURL(url);
       // Parse and render data
       const data = this.dataServers[this.activeDS].renderPage();
       this.updateContent(data);
+      this.mainBox.scrollTo(0);
     } catch (err) {
       if (err && err.message) {
         this.updateContent([err.message, url]);
