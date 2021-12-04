@@ -45,7 +45,7 @@ export const helpBox: blessed.Widgets.BoxOptions = {
     "\n\t[Enter] - Visit entered URL" +
     "\n\t[Escape] - Exit URL bar" +
     "\n" +
-    "\n[Ctrl + h] [t] - Open browser history" +
+    "\n[t] - Open browser history" +
     "\n\t[Tab] - Cycle forward through history" +
     "\n\t[Shift + Tab] - Cycle backwards through history" +
     "\n\t[Enter] - Visit selected URL" +
