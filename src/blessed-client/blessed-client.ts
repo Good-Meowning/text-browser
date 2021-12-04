@@ -84,6 +84,7 @@ export class BlessedClient {
       this.screen.render();
     });
     this.mainBox.key(["t"], (_ch, _key) => {
+      this.screen.remove(this.mainBox);
       this.screen.append(this.historyBox);
       this.updateHistoryContent();
     });
@@ -149,6 +150,7 @@ export class BlessedClient {
     this.historyBox.key(["escape", "S-h"], (_ch, _key) => {
       this.historyIndex = 0;
       this.screen.remove(this.historyBox);
+      this.screen.append(this.mainBox);
       this.screen.render();
       this.mainBox.focus();
     });
@@ -166,6 +168,7 @@ export class BlessedClient {
     });
     this.historyBox.key(["enter"], (_ch, _key) => {
       this.screen.remove(this.historyBox);
+      this.screen.append(this.mainBox);
       this.visitURL(this.history[this.historyIndex]);
     });
   }
