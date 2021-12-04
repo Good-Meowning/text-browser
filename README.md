@@ -35,8 +35,9 @@
 5. Run the code using Docker by entering the following command into the terminal:
 
    ```bash
-   # ./run.sh <URL>
+   # ./run.sh <optional URL>
    # For example:
+   ./run.sh
    ./run.sh google.ca
    ./run.sh http://www.cs.toronto.edu/~arnold/index.html
    ./run.sh file://webserver/public-html/paragraph.html

@@ -5,12 +5,14 @@ function main() {
   const args = process.argv;
 
   // Exit app iff invalid parameters
-  if (!args[2]) return console.log("Usage: npm start <url>");
-  const url = args[2];
+  if ("-h" in args || "--help" in args)
+    return console.log("Usage: npm start <optional URL>");
 
   // Create browser client
   const blessedClient = new BlessedClient();
-  blessedClient.visitURL(url);
+
+  // Visit URL if provided
+  if (args[2]) blessedClient.visitURL(args[2]);
 }
 
 main();
