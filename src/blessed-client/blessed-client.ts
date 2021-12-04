@@ -84,7 +84,6 @@ export class BlessedClient {
       this.screen.render();
     });
     this.mainBox.key(["t"], (_ch, _key) => {
-      this.historyIndex = 0;
       this.screen.remove(this.mainBox);
       this.screen.append(this.historyBox);
       this.updateHistoryContent();
@@ -149,6 +148,7 @@ export class BlessedClient {
    */
   private initiateHistoryBox() {
     this.historyBox.key(["escape", "S-h"], (_ch, _key) => {
+      this.historyIndex = 0;
       this.screen.remove(this.historyBox);
       this.screen.append(this.mainBox);
       this.screen.render();
@@ -239,6 +239,8 @@ export class BlessedClient {
       if (this.historyIndex === i) {
         data += "{red-bg}";
       }
+      // Do not let URLs be empty
+      if (!url) data += " ";
       data += url;
       if (this.historyIndex === i) {
         data += "{/red-bg}";
@@ -264,6 +266,7 @@ export class BlessedClient {
       // Parse and render data
       const data = this.dataServers[this.activeDS].renderPage();
       this.updateContent(data);
+      this.mainBox.scrollTo(0);
     } catch (err) {
       // TODO: catch different error code and update the error msg
       // console.error(err);

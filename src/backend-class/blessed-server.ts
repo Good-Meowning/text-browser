@@ -27,7 +27,7 @@ export class DataServer {
    * @param url
    */
   public async visitURL(url: string) {
-    if (!url) return;
+    if (!url) throw new Error("Invalid URL: empty");
 
     // Parse and set URL
     this.parsedURL = getParsedURL(url);
