@@ -142,6 +142,9 @@ export class BlessedClient {
     });
   }
 
+  /**
+   * Set up keypress listeners for the history box
+   */
   private initiateHistoryBox() {
     this.historyBox.key(["escape", "S-h"], (_ch, _key) => {
       this.historyIndex = 0;
@@ -150,11 +153,15 @@ export class BlessedClient {
       this.mainBox.focus();
     });
     this.historyBox.key(["tab"], (_ch, _key) => {
-      this.historyIndex = ((this.historyIndex + 1 % this.history.length) + this.history.length) % this.history.length;
+      this.historyIndex =
+        (this.historyIndex + (1 % this.history.length) + this.history.length) %
+        this.history.length;
       this.updateHistoryContent();
     });
     this.historyBox.key(["S-tab"], (_ch, _key) => {
-      this.historyIndex = ((this.historyIndex - 1 % this.history.length) + this.history.length) % this.history.length;
+      this.historyIndex =
+        (this.historyIndex - (1 % this.history.length) + this.history.length) %
+        this.history.length;
       this.updateHistoryContent();
     });
     this.historyBox.key(["enter"], (_ch, _key) => {
@@ -177,12 +184,18 @@ export class BlessedClient {
     this.updateContent(this.dataServers[this.activeDS].renderPage());
   }
 
+  /**
+   * Create new tab and set it as the active tab
+   */
   private createTab() {
     this.dataServers.push(new DataServer());
     this.activeDS = this.dataServers.length - 1;
     this.updateContent(this.dataServers[this.activeDS].renderPage());
   }
 
+  /**
+   * Remove active tab, and create new tab if no tabs remain
+   */
   private removeTab() {
     this.dataServers.splice(this.activeDS, 1);
     if (this.dataServers.length <= 0) this.createTab();
@@ -213,15 +226,18 @@ export class BlessedClient {
     this.screen.render();
   }
 
+  /**
+   * Update history page
+   */
   private updateHistoryContent() {
-    let data: string = "";
+    let data = "";
     for (let i = 0; i < this.history.length; i++) {
       const url = this.history[i];
-      if (this.historyIndex == i) {
+      if (this.historyIndex === i) {
         data += "{red-bg}";
       }
       data += url;
-      if (this.historyIndex == i) {
+      if (this.historyIndex === i) {
         data += "{/red-bg}";
       }
       data += "\n";
